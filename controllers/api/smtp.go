@@ -21,6 +21,10 @@ func (as *Server) SendingProfiles(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Error(err)
 		}
+		for i := range ss {
+			ss[i].Password = "******"
+		}
+
 		JSONResponse(w, ss, http.StatusOK)
 	//POST: Create a new SMTP and return it as JSON
 	case r.Method == "POST":
@@ -45,6 +49,8 @@ func (as *Server) SendingProfiles(w http.ResponseWriter, r *http.Request) {
 			JSONResponse(w, models.Response{Success: false, Message: err.Error()}, http.StatusInternalServerError)
 			return
 		}
+
+		s.Password = "******"
 		JSONResponse(w, s, http.StatusCreated)
 	}
 }
@@ -61,6 +67,7 @@ func (as *Server) SendingProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	switch {
 	case r.Method == "GET":
+		s.Password = "******"
 		JSONResponse(w, s, http.StatusOK)
 	case r.Method == "DELETE":
 		err = models.DeleteSMTP(id, ctx.Get(r, "user_id").(int64))
@@ -91,6 +98,7 @@ func (as *Server) SendingProfile(w http.ResponseWriter, r *http.Request) {
 			JSONResponse(w, models.Response{Success: false, Message: "Error updating page"}, http.StatusInternalServerError)
 			return
 		}
+		s.Password = "******"
 		JSONResponse(w, s, http.StatusOK)
 	}
 }
